@@ -163,15 +163,22 @@ class FormPlugin extends Plugin
         $submitted = false;
         $this->json_response = [];
 
+        $pageHeader = $this->grav['page']->header();
+
+        // Option to force rebuilding form everytime
+        // Usefull when using data-*@ in frontend form with a function that dynamically return data
+        // The original main issue is that without rebuilding form, the return of a user call function is kept in cache
+        $force_rebuild_form = (isset($pageHeader->force_rebuild_form) && (bool) $pageHeader->force_rebuild_form === true);
+
         // Save cached forms.
-        if ($this->recache_forms) {
+        if ($this->recache_forms || $force_rebuild_form) {
             $this->saveCachedForms();
         }
 
         // Force rebuild form when form has not been built and form cache expired.
         // This happens when form cache expires before the page cache
         // and then does not trigger 'onPageProcessed' event.
-        if (!$this->forms) {
+        if (!$this->forms || $force_rebuild_form) {
             $this->onPageProcessed(new Event(['page' => $this->grav['page']]));
         }
 

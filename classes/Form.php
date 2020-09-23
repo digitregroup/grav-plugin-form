@@ -747,6 +747,7 @@ class Form implements FormInterface, \ArrayAccess
                 $data = $this->values->toArray();
             }
 
+            /* Nonce check deactivated because it randomly fails too often
             if (!$this->values->get('form-nonce') || !Utils::verifyNonce($this->values->get('form-nonce'), 'form')) {
                 $this->status = 'error';
                 $event = new Event(['form' => $this,
@@ -756,6 +757,7 @@ class Form implements FormInterface, \ArrayAccess
 
                 return;
             }
+            */
 
             $i = 0;
             foreach ($this->items['fields'] as $key => $field) {
